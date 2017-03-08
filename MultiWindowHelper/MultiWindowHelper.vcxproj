@@ -66,6 +66,9 @@
     <ResourceCompile>
       <AdditionalIncludeDirectories>F:\Code\_Include\CWUi\C++\Windows</AdditionalIncludeDirectories>
     </ResourceCompile>
+    <Manifest>
+      <AdditionalManifestFiles>$(SolutionDir)/Manifest-Win7.xml</AdditionalManifestFiles>
+    </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -87,6 +90,9 @@
     <ResourceCompile>
       <AdditionalIncludeDirectories>F:\Code\_Include\CWUi\C++\Windows</AdditionalIncludeDirectories>
     </ResourceCompile>
+    <Manifest>
+      <AdditionalManifestFiles>$(SolutionDir)/Manifest-Win7.xml</AdditionalManifestFiles>
+    </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />

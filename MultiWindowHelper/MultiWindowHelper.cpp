@@ -52,7 +52,7 @@ LRESULT CALLBACK WndProc( HWND aHWnd , UINT aMsg , WPARAM aWParam , LPARAM aLPar
                 }
             }
 
-            WCHAR wzEdt[EDT_MAIN_COUNT][100] = { L"(Something)" };
+            WCHAR wzEdt[EDT_MAIN_COUNT][100] = { L"Log:\r\n" };
             WCHAR wzBtn[BTN_MAIN_COUNT][100] = { L"Start" , L"Clean" };
             EventProc btnCommand[BTN_MAIN_COUNT] = { (EventProc)BtnStartCommand , (EventProc)BtnCleanCommand };
 
@@ -94,7 +94,6 @@ LRESULT CALLBACK WndProc( HWND aHWnd , UINT aMsg , WPARAM aWParam , LPARAM aLPar
                     
                 }
             }
-
             break;
         }
         case WM_NOTIFY :    //Receive when user do something
@@ -123,6 +122,24 @@ LRESULT CALLBACK WndProc( HWND aHWnd , UINT aMsg , WPARAM aWParam , LPARAM aLPar
         case WM_RBUTTONDBLCLK :
         case WM_MOUSEMOVE :
         {
+            //if ( aMsg == WM_KEYDOWN || aMsg == WM_KEYUP )
+            //{
+            //    WCHAR wzBuf[4096];
+			//    bitset<sizeof(ULONG)*8> repeat( (int)BitRange( (ULONG)aLParam , 0 , 15 ) );
+			//    bitset<sizeof(ULONG)*8> scan( (int)BitRange( (ULONG)aLParam , 16 , 23 ) );
+			//    bitset<sizeof(ULONG)*8> extend( (int)BitRange( (ULONG)aLParam , 24 , 24 ) );
+			//    bitset<sizeof(ULONG)*8> reserved( (int)BitRange( (ULONG)aLParam , 25 , 28 ) );
+			//    bitset<sizeof(ULONG)*8> context( (int)BitRange( (ULONG)aLParam , 29 , 29 ) );
+			//    bitset<sizeof(ULONG)*8> preState( (int)BitRange( (ULONG)aLParam , 30 , 30 ) );
+			//    bitset<sizeof(ULONG)*8> transition( (int)BitRange( (ULONG)aLParam , 31 , 31 ) );			
+			//    _snwprintf_s( wzBuf , _TRUNCATE , 
+            //                    L"%ws: Virtual Code: %lu, Repeat Count: %lu, Scan Code: %lu, Extend: %lu, Reserved: %lu\r\n"
+			//		            L"\tContext Code: %lu, Previous State: %lu, Transition State: %lu\r\n" , 
+			//		            ( aMsg == WM_KEYDOWN ) ? L"WM_KEYDOWN" : L"WM_KEYUP" ,
+            //                    aWParam , repeat.to_ulong() , scan.to_ulong() , extend.to_ulong() , reserved.to_ulong() ,
+			//		            context.to_ulong() , preState.to_ulong() , transition.to_ulong() );
+            //    ((CEdit *)g_ctrlMain[EDT_SHOW])->AddText( wzBuf );
+            //}
             if ( g_hWnds != NULL )
             {
                 for ( size_t i = 0 ; i < g_vecWindowNames.size() ; i++ )
@@ -132,6 +149,7 @@ LRESULT CALLBACK WndProc( HWND aHWnd , UINT aMsg , WPARAM aWParam , LPARAM aLPar
                         PostMessageW( g_hWnds[i] , aMsg , aWParam , aLParam );
                     }
                 }
+                return 0;   //Handled
             }
             break;
         }
@@ -139,7 +157,7 @@ LRESULT CALLBACK WndProc( HWND aHWnd , UINT aMsg , WPARAM aWParam , LPARAM aLPar
         {
             INT nWidth = LOWORD( aLParam );
             INT nHeight = HIWORD( aLParam );
-
+        
             for ( INT i = 0 ; i < EDT_MAIN_COUNT - 1 ; i++ )
             {
                 g_ctrlMain[EDT_MAIN_START + i]->SetWidthHeight( nWidth / 6 , 20 );
@@ -148,14 +166,13 @@ LRESULT CALLBACK WndProc( HWND aHWnd , UINT aMsg , WPARAM aWParam , LPARAM aLPar
             {
                 g_ctrlMain[BTN_MAIN_START + i]->SetWidthHeight( nWidth / 6 , 20 );
             }
-
-            
+        
             g_ctrlMain[BTN_START]->SetPos( ( nWidth - g_ctrlMain[BTN_START]->Width() ) / 2 , 10 );
             g_ctrlMain[BTN_CLEAN]->SetPos( nWidth - 10 - g_ctrlMain[BTN_CLEAN]->Width() , g_ctrlMain[BTN_START]->PosY() );
-
+        
             g_ctrlMain[EDT_SHOW]->SetWidthHeight( nWidth - 20 , nHeight - g_ctrlMain[BTN_CLEAN]->PosY() - g_ctrlMain[BTN_CLEAN]->Height() - 20 );
             g_ctrlMain[EDT_SHOW]->SetPos( 10 , g_ctrlMain[BTN_CLEAN]->PosY() + g_ctrlMain[BTN_CLEAN]->Height() + 10 );
-
+        
             break;
         }
         case WM_PAINT :    //Receive when something need to be painted
@@ -179,16 +196,7 @@ LRESULT CALLBACK WndProc( HWND aHWnd , UINT aMsg , WPARAM aWParam , LPARAM aLPar
             DeleteObject( hBrush );
             hBrush = CreateSolidBrush( GetSysColor(COLOR_WINDOW) );
             return 0 ;
-        }
-        //case WM_RBUTTONDOWN :    //Receive when user click right mouse
-        //{
-        //    WCHAR wzFileName[MAX_PATH];
-        //    HINSTANCE hInstance = GetModuleHandle( NULL );
-        //
-        //    GetModuleFileNameW( hInstance , wzFileName , MAX_PATH );
-        //    MessageBoxW( aHWnd , wzFileName , L"This program is: " , MB_OK | MB_ICONINFORMATION );
-        //    break;
-        //}            
+        }         
         case WM_CLOSE :    //Receive when user try to close the window
         {
             if ( g_hWnds != NULL )
@@ -196,6 +204,7 @@ LRESULT CALLBACK WndProc( HWND aHWnd , UINT aMsg , WPARAM aWParam , LPARAM aLPar
                 delete [] g_hWnds;
                 g_hWnds = NULL;
             }
+            DeleteObject( hBrush );
             DestroyWindow( aHWnd );
             break;
         }
@@ -242,7 +251,7 @@ INT WINAPI wWinMain( HINSTANCE aHInstance , HINSTANCE aHPrevInstance , LPWSTR aC
     }
 
     HWND hWnd = CreateWindowExW( WS_EX_CLIENTEDGE , wzClassName , L"MultiWindowHelper by winest" , WS_OVERLAPPEDWINDOW ,
-                                 CW_USEDEFAULT , CW_USEDEFAULT , 800  , 600 , NULL , NULL , aHInstance , NULL );
+                                 CW_USEDEFAULT , CW_USEDEFAULT , 320  , 240 , NULL , NULL , aHInstance , NULL );
     if ( NULL == hWnd )
     {
         CWUtils::ShowDebugMsg( L"Error: failed to create hWnd" );
@@ -255,7 +264,7 @@ INT WINAPI wWinMain( HINSTANCE aHInstance , HINSTANCE aHPrevInstance , LPWSTR aC
     MSG msg;
     while ( 0 < GetMessageW( &msg , NULL , 0 , 0 ) )
     {
-        if ( ! IsDialogMessage( hWnd , &msg ) )
+        //if ( ! IsDialogMessage( hWnd , &msg ) )
         {
             TranslateMessage( &msg );
             DispatchMessage( &msg );
