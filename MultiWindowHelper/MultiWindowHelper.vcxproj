@@ -105,6 +105,7 @@
     <ClInclude Include="..\..\..\..\..\..\_Include\CWUtils\C++\Windows\CWGeneralUtils.h" />
     <ClInclude Include="..\..\..\..\..\..\_Include\CWUtils\C++\Windows\CWIni.h" />
     <ClInclude Include="..\..\..\..\..\..\_Include\CWUtils\C++\Windows\CWString.h" />
+    <ClInclude Include="Config.h" />
     <ClInclude Include="CWButtonProcs.h" />
     <ClInclude Include="MultiWindowHelper.h" />
     <ClInclude Include="Resource.h" />
@@ -118,6 +119,7 @@
     <ClCompile Include="..\..\..\..\..\..\_Include\CWUtils\C++\Windows\CWGeneralUtils.cpp" />
     <ClCompile Include="..\..\..\..\..\..\_Include\CWUtils\C++\Windows\CWIni.cpp" />
     <ClCompile Include="..\..\..\..\..\..\_Include\CWUtils\C++\Windows\CWString.cpp" />
+    <ClCompile Include="Config.cpp" />
     <ClCompile Include="CWButtonProcs.cpp" />
     <ClCompile Include="MultiWindowHelper.cpp" />
     <ClCompile Include="stdafx.cpp">
