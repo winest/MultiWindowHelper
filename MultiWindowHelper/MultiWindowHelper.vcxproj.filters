@@ -13,6 +13,18 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\CWUtils">
+      <UniqueIdentifier>{c740f661-abf0-4a18-b612-85deb4b68830}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\CWUi">
+      <UniqueIdentifier>{4b42acf4-1bcf-40ff-8183-18845c508382}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\CWUtils">
+      <UniqueIdentifier>{def9efba-a9b8-47a1-8997-63bb27c1b5af}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\CWUi">
+      <UniqueIdentifier>{79df6bf9-aa1a-49ad-b274-b2732b2ce299}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -24,34 +36,34 @@
     <ClInclude Include="Resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MultiWindowHelper.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="CWButtonProcs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\..\_Include\CWUi\C++\Windows\CWEdit.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\..\..\_Include\CWUi\C++\Windows\CWButton.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\CWUi</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\..\_Include\CWUi\C++\Windows\CWControl.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\CWUi</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\..\_Include\CWUtils\C++\Windows\CWGeneralUtils.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\..\..\_Include\CWUtils\C++\Windows\CWIni.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\..\..\_Include\CWUtils\C++\Windows\CWString.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\..\..\..\..\..\_Include\CWUi\C++\Windows\CWEdit.h">
+      <Filter>Header Files\CWUi</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\..\_Include\CWUtils\C++\Windows\CWFile.h">
+      <Filter>Header Files\CWUtils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\_Include\CWUtils\C++\Windows\CWGeneralUtils.h">
+      <Filter>Header Files\CWUtils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\_Include\CWUtils\C++\Windows\CWIni.h">
+      <Filter>Header Files\CWUtils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\_Include\CWUtils\C++\Windows\CWString.h">
+      <Filter>Header Files\CWUtils</Filter>
+    </ClInclude>
+    <ClInclude Include="MultiWindowConfig.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Config.h">
+    <ClInclude Include="MultiWindowCtrl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -59,34 +71,37 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="MultiWindowHelper.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="CWButtonProcs.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\..\_Include\CWUi\C++\Windows\CWEdit.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\..\_Include\CWUi\C++\Windows\CWButton.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\..\_Include\CWUi\C++\Windows\CWControl.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\..\..\_Include\CWUtils\C++\Windows\CWGeneralUtils.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\..\_Include\CWUtils\C++\Windows\CWIni.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\..\_Include\CWUtils\C++\Windows\CWString.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\CWUtils</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\..\_Include\CWUtils\C++\Windows\CWFile.cpp">
+      <Filter>Source Files\CWUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\..\_Include\CWUtils\C++\Windows\CWIni.cpp">
+      <Filter>Source Files\CWUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\..\_Include\CWUtils\C++\Windows\CWString.cpp">
+      <Filter>Source Files\CWUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\..\_Include\CWUi\C++\Windows\CWButton.cpp">
+      <Filter>Source Files\CWUi</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\..\_Include\CWUi\C++\Windows\CWControl.cpp">
+      <Filter>Source Files\CWUi</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\..\_Include\CWUi\C++\Windows\CWEdit.cpp">
+      <Filter>Source Files\CWUi</Filter>
+    </ClCompile>
+    <ClCompile Include="Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Config.cpp">
+    <ClCompile Include="MultiWindowConfig.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MultiWindowCtrl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

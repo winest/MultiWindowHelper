@@ -62,6 +62,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <UACExecutionLevel>RequireAdministrator</UACExecutionLevel>
     </Link>
     <ResourceCompile>
       <AdditionalIncludeDirectories>F:\Code\_Include\CWUi\C++\Windows</AdditionalIncludeDirectories>
@@ -69,6 +70,9 @@
     <Manifest>
       <AdditionalManifestFiles>$(SolutionDir)/Manifest-Win7.xml</AdditionalManifestFiles>
     </Manifest>
+    <PostBuildEvent>
+      <Command>COPY /Y "$(SolutionDir)\Config.ini" "$(OutDir)\Config.ini"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -86,6 +90,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <UACExecutionLevel>RequireAdministrator</UACExecutionLevel>
     </Link>
     <ResourceCompile>
       <AdditionalIncludeDirectories>F:\Code\_Include\CWUi\C++\Windows</AdditionalIncludeDirectories>
@@ -93,6 +98,9 @@
     <Manifest>
       <AdditionalManifestFiles>$(SolutionDir)/Manifest-Win7.xml</AdditionalManifestFiles>
     </Manifest>
+    <PostBuildEvent>
+      <Command>COPY /Y "$(SolutionDir)\Config.ini" "$(OutDir)\Config.ini"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -105,9 +113,9 @@
     <ClInclude Include="..\..\..\..\..\..\_Include\CWUtils\C++\Windows\CWGeneralUtils.h" />
     <ClInclude Include="..\..\..\..\..\..\_Include\CWUtils\C++\Windows\CWIni.h" />
     <ClInclude Include="..\..\..\..\..\..\_Include\CWUtils\C++\Windows\CWString.h" />
-    <ClInclude Include="Config.h" />
+    <ClInclude Include="MultiWindowConfig.h" />
     <ClInclude Include="CWButtonProcs.h" />
-    <ClInclude Include="MultiWindowHelper.h" />
+    <ClInclude Include="MultiWindowCtrl.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
@@ -119,9 +127,10 @@
     <ClCompile Include="..\..\..\..\..\..\_Include\CWUtils\C++\Windows\CWGeneralUtils.cpp" />
     <ClCompile Include="..\..\..\..\..\..\_Include\CWUtils\C++\Windows\CWIni.cpp" />
     <ClCompile Include="..\..\..\..\..\..\_Include\CWUtils\C++\Windows\CWString.cpp" />
-    <ClCompile Include="Config.cpp" />
+    <ClCompile Include="MultiWindowConfig.cpp" />
     <ClCompile Include="CWButtonProcs.cpp" />
-    <ClCompile Include="MultiWindowHelper.cpp" />
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="MultiWindowCtrl.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
