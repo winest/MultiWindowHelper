@@ -4,39 +4,6 @@ using namespace std;
 using namespace CWUi;
 
 
-BOOL g_bStarted = FALSE;
-HWND * g_hWnds = NULL;
-std::vector<std::wstring> g_vecWindowNames;
-
-BOOL BtnStartCommand( HWND aHWnd , WPARAM aWParam , LPARAM aLParam , VOID * aArgs )
-{
-    UNREFERENCED_PARAMETER( aLParam );
-    UNREFERENCED_PARAMETER( aArgs );
-
-    BOOL bRet = FALSE;
-    switch ( HIWORD(aWParam) )
-    {
-        case BN_CLICKED:
-        {
-            if ( CMultiWindowCtrl::GetInstance()->IsStarted() )
-            {
-                bRet = CMultiWindowCtrl::GetInstance()->Stop();
-            }
-            else
-            {
-                bRet = CMultiWindowCtrl::GetInstance()->Start();
-            }
-            break;
-        }
-        default:
-        {
-            break;
-        }
-    }
-    return bRet;
-}
-
-
 
 BOOL BtnCleanCommand( HWND aHWnd , WPARAM aWParam , LPARAM aLParam , VOID * aArgs )
 {

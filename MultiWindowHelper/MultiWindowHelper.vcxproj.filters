@@ -66,6 +66,15 @@
     <ClInclude Include="MultiWindowCtrl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Main.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\_Include\CWUi\C++\Windows\CWToolbar.h">
+      <Filter>Header Files\CWUi</Filter>
+    </ClInclude>
+    <ClInclude Include="CWToolbarProcs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -102,6 +111,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MultiWindowCtrl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\..\_Include\CWUi\C++\Windows\CWToolbar.cpp">
+      <Filter>Source Files\CWUi</Filter>
+    </ClCompile>
+    <ClCompile Include="CWToolbarProcs.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

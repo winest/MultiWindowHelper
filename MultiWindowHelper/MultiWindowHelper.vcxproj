@@ -71,7 +71,8 @@
       <AdditionalManifestFiles>$(SolutionDir)/Manifest-Win7.xml</AdditionalManifestFiles>
     </Manifest>
     <PostBuildEvent>
-      <Command>COPY /Y "$(SolutionDir)\Config.ini" "$(OutDir)\Config.ini"</Command>
+      <Command>COPY /Y "$(SolutionDir)\Config.ini" "$(OutDir)\Config.ini"
+COPY /Y "$(SolutionDir)\Pictures" "$(OutDir)\Pictures"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -99,7 +100,8 @@
       <AdditionalManifestFiles>$(SolutionDir)/Manifest-Win7.xml</AdditionalManifestFiles>
     </Manifest>
     <PostBuildEvent>
-      <Command>COPY /Y "$(SolutionDir)\Config.ini" "$(OutDir)\Config.ini"</Command>
+      <Command>COPY /Y "$(SolutionDir)\Config.ini" "$(OutDir)\Config.ini"
+COPY /Y "$(SolutionDir)\Pictures" "$(OutDir)\Pictures"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -109,10 +111,13 @@
     <ClInclude Include="..\..\..\..\..\..\_Include\CWUi\C++\Windows\CWButton.h" />
     <ClInclude Include="..\..\..\..\..\..\_Include\CWUi\C++\Windows\CWControl.h" />
     <ClInclude Include="..\..\..\..\..\..\_Include\CWUi\C++\Windows\CWEdit.h" />
+    <ClInclude Include="..\..\..\..\..\..\_Include\CWUi\C++\Windows\CWToolbar.h" />
     <ClInclude Include="..\..\..\..\..\..\_Include\CWUtils\C++\Windows\CWFile.h" />
     <ClInclude Include="..\..\..\..\..\..\_Include\CWUtils\C++\Windows\CWGeneralUtils.h" />
     <ClInclude Include="..\..\..\..\..\..\_Include\CWUtils\C++\Windows\CWIni.h" />
     <ClInclude Include="..\..\..\..\..\..\_Include\CWUtils\C++\Windows\CWString.h" />
+    <ClInclude Include="CWToolbarProcs.h" />
+    <ClInclude Include="Main.h" />
     <ClInclude Include="MultiWindowConfig.h" />
     <ClInclude Include="CWButtonProcs.h" />
     <ClInclude Include="MultiWindowCtrl.h" />
@@ -123,10 +128,12 @@
     <ClCompile Include="..\..\..\..\..\..\_Include\CWUi\C++\Windows\CWButton.cpp" />
     <ClCompile Include="..\..\..\..\..\..\_Include\CWUi\C++\Windows\CWControl.cpp" />
     <ClCompile Include="..\..\..\..\..\..\_Include\CWUi\C++\Windows\CWEdit.cpp" />
+    <ClCompile Include="..\..\..\..\..\..\_Include\CWUi\C++\Windows\CWToolbar.cpp" />
     <ClCompile Include="..\..\..\..\..\..\_Include\CWUtils\C++\Windows\CWFile.cpp" />
     <ClCompile Include="..\..\..\..\..\..\_Include\CWUtils\C++\Windows\CWGeneralUtils.cpp" />
     <ClCompile Include="..\..\..\..\..\..\_Include\CWUtils\C++\Windows\CWIni.cpp" />
     <ClCompile Include="..\..\..\..\..\..\_Include\CWUtils\C++\Windows\CWString.cpp" />
+    <ClCompile Include="CWToolbarProcs.cpp" />
     <ClCompile Include="MultiWindowConfig.cpp" />
     <ClCompile Include="CWButtonProcs.cpp" />
     <ClCompile Include="Main.cpp" />
