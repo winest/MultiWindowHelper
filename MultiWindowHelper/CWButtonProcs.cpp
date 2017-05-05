@@ -15,7 +15,7 @@ BOOL BtnCleanCommand( HWND aHWnd , WPARAM aWParam , LPARAM aLParam , VOID * aArg
     {
         case BN_CLICKED:
         {
-            CEdit * edtShow = (CEdit *)g_ctrlMain[EDT_SHOW];
+            CEdit * edtShow = (CEdit *)g_ctrlMain[EDT_LOG];
             edtShow->Clean();
             return TRUE;
         }

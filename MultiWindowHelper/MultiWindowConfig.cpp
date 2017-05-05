@@ -31,7 +31,7 @@ struct
 BOOL CMultiWindowConfig::Reload()
 {
     BOOL bRet = FALSE;
-    CEdit * edtShow = (CEdit *)g_ctrlMain[EDT_SHOW];
+    CEdit * edtShow = (CEdit *)g_ctrlMain[EDT_LOG];
 
     do 
     {
@@ -40,7 +40,7 @@ BOOL CMultiWindowConfig::Reload()
         map<std::wstring,std::wstring> mapIniGeneral;
         if ( FALSE == CWUtils::GetIniSectionValues( wstrConfigPath.c_str() , L"General" , mapIniGeneral ) )
         {
-            edtShow->AddText( L"Config.ini not found\r\n" );
+            edtShow->AddText( L"%ws not found\r\n" , wstrConfigPath.c_str() );
             break;
         }
         
@@ -51,6 +51,10 @@ BOOL CMultiWindowConfig::Reload()
             edtShow->AddText( L"WindowNames key not found\r\n" );
             break;
         }
+        else
+        {
+            edtShow->AddText( L"WindowNames: %ws\r\n" , it->second.c_str() );
+        }
         CWUtils::SplitStringW( it->second , m_vecWindowNames , L";" );
         if ( m_vecWindowNames.size() == 0 )
         {
@@ -58,8 +62,29 @@ BOOL CMultiWindowConfig::Reload()
             break;
         }
 
+        //DisplayMode
+        m_nDisplayMode = (MULTI_WINDOW_DISPLAY_MODE)GetPrivateProfileIntW( L"General" , L"DisplayMode" , (INT)MULTI_WINDOW_DISPLAY_MODE_BITBLT , wstrConfigPath.c_str() );
+        m_nDisplayMode = max( MULTI_WINDOW_DISPLAY_MODE_BITBLT , min( m_nDisplayMode , MULTI_WINDOW_DISPLAY_MODE_GLREADPIXELS ) );
+
+        //Frame Per Second
+        it = mapIniGeneral.find( L"FPS" );
+        if ( it == mapIniGeneral.end() )
+        {
+            edtShow->AddText( L"FPS key not found\r\n" );
+            it->second = L"30";
+        }
+        else
+        {
+            edtShow->AddText( L"FPS: %ws\r\n" , it->second.c_str() );
+        }
+        m_fFps = wcstod( it->second.c_str() , NULL );
+        m_fFps = max( FLT_MIN , min( m_fFps , 1000.0 ) );
+
         //Asynchronous
         m_bAsync = GetPrivateProfileIntW( L"General" , L"Asynchronous" , 1 , wstrConfigPath.c_str() ) ? TRUE : FALSE;
+
+        //RetrieveEvenMinimized
+        m_bRetrieveEvenMinimized = GetPrivateProfileIntW( L"General" , L"RetrieveEvenMinimized" , 0 , wstrConfigPath.c_str() ) ? TRUE : FALSE;
 
         //WM_*
         for ( size_t i = 0 ; i < _countof(g_DispatchConfig) ; i++ )
@@ -82,9 +107,24 @@ BOOL CMultiWindowConfig::GetWindowNames( std::vector<std::wstring> & aWindowName
     return TRUE;
 }
 
+MULTI_WINDOW_DISPLAY_MODE CMultiWindowConfig::GetDisplayMode()
+{
+    return m_nDisplayMode;
+}
+
+DOUBLE CMultiWindowConfig::GetFps()
+{
+    return m_fFps;
+}
+
 BOOL CMultiWindowConfig::IsAsync()
 {
     return m_bAsync;
+}
+
+BOOL CMultiWindowConfig::IsRetrieveEvenMinimized()
+{
+    return m_bRetrieveEvenMinimized;
 }
 
 BOOL CMultiWindowConfig::ShouldDispatch( INT aMsgType )

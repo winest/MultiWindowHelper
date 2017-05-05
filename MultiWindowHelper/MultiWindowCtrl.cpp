@@ -14,7 +14,7 @@ BOOL CMultiWindowCtrl::IsStarted()
 BOOL CMultiWindowCtrl::Start()
 {
     BOOL bRet = FALSE;
-    CEdit * edtShow = (CEdit *)g_ctrlMain[EDT_SHOW];
+    CEdit * edtShow = (CEdit *)g_ctrlMain[EDT_LOG];
     CToolbar * tbrUp = (CToolbar *)g_ctrlMain[TBR_MAIN_UP];
     CToolbar * tbrLeft = (CToolbar *)g_ctrlMain[TBR_MAIN_LEFT];
 
@@ -39,18 +39,31 @@ BOOL CMultiWindowCtrl::Start()
                 WindowInfo info;
                 info.wstrWindowName = vecWindowNames[i];
                 info.hWnd = hWnd;
-                info.hInstance = (HINSTANCE)GetWindowLongW( hWnd , GWL_HINSTANCE );
-                info.hBitmap = (HBITMAP)LoadImageW( info.hInstance , MAKEINTRESOURCE(IDI_APPLICATION) , IMAGE_BITMAP , 0 , 0 , LR_DEFAULTSIZE | LR_SHARED );
+                info.lpExStyle = GetWindowLongPtrW( hWnd , GWL_EXSTYLE );
+                SetWindowLongPtrW( hWnd , GWL_EXSTYLE , info.lpExStyle | WS_EX_LAYERED );
+
+                //Get target window's icon
+                HICON hIcon = (HICON)GetClassLongPtrW( hWnd , GCLP_HICON );
+                HDC hDC = GetDC( tbrUp->Self() );
+                HDC hMemDC = CreateCompatibleDC( hDC );
+                HBITMAP hMemBmp = CreateCompatibleBitmap( hDC , tbrUp->IconWidth() , tbrUp->IconHeight() );
+                HGDIOBJ hLastObj = SelectObject( hMemDC , hMemBmp );
+                DrawIconEx( hMemDC , 0 , 0 , hIcon , tbrUp->IconWidth() , tbrUp->IconHeight() , 0 , NULL , DI_NORMAL );
+                SelectObject( hMemDC , hLastObj );
+                DeleteDC( hMemDC );
+                ReleaseDC( NULL , hDC );
+                DestroyIcon( hIcon );
+                info.hBitmap = hMemBmp;
                 m_vecWindows.push_back( info );
 
-                INT nImgIndex = tbrUp->AddImage( info.hBitmap , i , RGB(255,255,255) );
-                tbrUp->AddCheckButton( i , IDC_TBR_UP_EMPTY+i , NULL , nImgIndex , TRUE );
+                INT nImgIndex = tbrUp->AddImage( info.hBitmap , RGB(255,255,255) );
+                tbrUp->AddCheckButton( i , IDC_TBR_UP_WINDOWS+i , info.wstrWindowName.c_str() , nImgIndex , TRUE );
             }
         }
 
 
         edtShow->AddText( L"Started\r\n" );
-        //tbrLeft->SetButtonInfo()->SetText( L"Stop" );
+        tbrLeft->SetButtonText( 0 , L"Stop" );
         m_bStarted = TRUE;
         bRet = TRUE;
     }
@@ -61,7 +74,7 @@ BOOL CMultiWindowCtrl::Start()
 BOOL CMultiWindowCtrl::Stop()
 {
     BOOL bRet = FALSE;
-    CEdit * edtShow = (CEdit *)g_ctrlMain[EDT_SHOW];
+    CEdit * edtShow = (CEdit *)g_ctrlMain[EDT_LOG];
     CToolbar * tbrUp = (CToolbar *)g_ctrlMain[TBR_MAIN_UP];
     CToolbar * tbrLeft = (CToolbar *)g_ctrlMain[TBR_MAIN_LEFT];
 
@@ -71,13 +84,13 @@ BOOL CMultiWindowCtrl::Stop()
         {
             for ( size_t i = 0 ; i < m_vecWindows.size() ; i++ )
             {
-                tbrUp->DeleteButton( i + 1 );
+                tbrUp->DeleteButton( 1 );
             }
             m_vecWindows.clear();
         }
 
         edtShow->AddText( L"Stopped\r\n" );
-        //btnStart->SetText( L"Start" );
+        tbrLeft->SetButtonText( 0 , L"Start" );
         m_bStarted = FALSE;
         bRet = TRUE;
     }
@@ -90,10 +103,10 @@ BOOL CMultiWindowCtrl::Stop()
     return bRet;
 }
 
-HWND CMultiWindowCtrl::GetWindow( size_t aIndex )
+HWND CMultiWindowCtrl::GetWindow( INT aIndex )
 {
     HWND hWnd = NULL;
-    if ( 0 <= aIndex && aIndex < m_vecWindows.size() - 1 )
+    if ( 0 <= aIndex && aIndex < (INT)m_vecWindows.size() )
     {
         hWnd = m_vecWindows[aIndex].hWnd;
     }

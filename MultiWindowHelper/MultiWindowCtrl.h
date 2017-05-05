@@ -12,17 +12,17 @@ class CMultiWindowCtrl
     protected :
         typedef struct _WindowInfo
         {
-            //~_WindowInfo()
-            //{
-            //    if ( hBitmap != NULL )
-            //    {
-            //        DeleteObject( hBitmap );
-            //        hBitmap = NULL;
-            //    }
-            //}
+            ~_WindowInfo()
+            {
+                if ( hBitmap != NULL )
+                {
+                    DeleteObject( hBitmap );
+                    hBitmap = NULL;
+                }
+            }
             std::wstring wstrWindowName;
             HWND hWnd;
-            HINSTANCE hInstance;
+            LONG_PTR lpExStyle;
             HBITMAP hBitmap;
         } WindowInfo;
 
@@ -37,7 +37,7 @@ class CMultiWindowCtrl
         BOOL Start();
         BOOL Stop();
 
-        HWND GetWindow( size_t aIndex );
+        HWND GetWindow( INT aIndex );
         BOOL DispatchMsgIfNeed( UINT aMsg , WPARAM aWParam , LPARAM aLParam );
 
     protected :
