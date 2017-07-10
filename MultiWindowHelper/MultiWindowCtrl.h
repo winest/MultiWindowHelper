@@ -1,29 +1,45 @@
 #pragma once
 #include "Resource.h"
+#include <Windowsx.h>
 #include <atomic>
 #include <vector>
+#include <bitset>
+#include <Psapi.h>
 #include "CWGeneralUtils.h"
 #include "CWToolbar.h"
 #include "CWEdit.h"
+#include "CWDllInjectMgr.h"
 #include "MultiWindowConfig.h"
 
 class CMultiWindowCtrl
 {
-    protected :
+    public :
         typedef struct _WindowInfo
         {
+            _WindowInfo() : hWnd(NULL) , hIcon(NULL) , bDllInjected(FALSE) , dwPid(0) , dwBmpSize(0) , pBmpData(NULL) {}
             ~_WindowInfo()
             {
-                if ( hBitmap != NULL )
+                if ( hIcon != NULL )
                 {
-                    DeleteObject( hBitmap );
-                    hBitmap = NULL;
+                    DeleteObject( hIcon );
+                    hIcon = NULL;
+                }
+                if ( pBmpData != NULL )
+                {
+                    delete [] pBmpData;
+                    pBmpData = NULL;
                 }
             }
             std::wstring wstrWindowName;
             HWND hWnd;
             LONG_PTR lpExStyle;
-            HBITMAP hBitmap;
+            HBITMAP hIcon;
+
+            BOOL bDllInjected;
+            DWORD dwPid;
+            std::wstring wstrProcPath;
+            DWORD dwBmpSize;
+            UINT * pBmpData;
         } WindowInfo;
 
     public :
@@ -38,6 +54,7 @@ class CMultiWindowCtrl
         BOOL Stop();
 
         HWND GetWindow( INT aIndex );
+        BOOL GetWindowInfoByPid( DWORD aPid , CONST WindowInfo ** aInfo );
         BOOL DispatchMsgIfNeed( UINT aMsg , WPARAM aWParam , LPARAM aLParam );
 
     protected :
@@ -46,4 +63,5 @@ class CMultiWindowCtrl
     private :
         std::atomic<BOOL> m_bStarted;
         std::vector<WindowInfo> m_vecWindows;
+        CWUtils::CDllInjectMgr m_DllInjectMgr;
 };

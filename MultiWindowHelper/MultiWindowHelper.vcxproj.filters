@@ -27,9 +27,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="ReadMe.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="stdafx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -75,6 +72,24 @@
     <ClInclude Include="CWToolbarProcs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\_Include\CWUtils\C++\Windows\CWDllInjectCommonDef.h">
+      <Filter>Header Files\CWUtils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\_Include\CWUtils\C++\Windows\CWDllInjectMgr.h">
+      <Filter>Header Files\CWUtils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\_Include\CWUtils\C++\Windows\CWDllInjectServer.h">
+      <Filter>Header Files\CWUtils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\WppLog\_GenerateTmh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CaptureInfo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\_Include\CWUtils\C++\Windows\CWProcess.h">
+      <Filter>Header Files\CWUtils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -118,6 +133,15 @@
     </ClCompile>
     <ClCompile Include="CWToolbarProcs.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\..\_Include\CWUtils\C++\Windows\CWDllInjectMgr.cpp">
+      <Filter>Source Files\CWUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\..\_Include\CWUtils\C++\Windows\CWDllInjectServer.cpp">
+      <Filter>Source Files\CWUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\..\_Include\CWUtils\C++\Windows\CWProcess.cpp">
+      <Filter>Source Files\CWUtils</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

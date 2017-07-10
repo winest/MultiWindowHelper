@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Main.h"
-#include <bitset>
 #include <gl/gl.h>
 
 #include "CWToolbar.h"
@@ -16,19 +15,16 @@
 
 using namespace std;
 using namespace CWUi;
+using namespace CWUtils;
 
 //#pragma comment( linker , "/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"" )
 CControl * g_ctrlMain[CTRL_MAIN_COUNT];
 HWND g_hWndMain = NULL;
 HWND g_hWndCanvas = NULL;
+UINT * g_pBmpData = NULL;
 
 
 
-ULONG BitRange( ULONG aNum , INT aIndexStart , INT aIndexEnd )
-{
-    ULONG mask = ( 1 << (aIndexEnd-aIndexStart+1) ) - 1;
-    return ( aNum >> aIndexStart ) & mask;
-}
 
 
 INT GetTbrUpIndex()
@@ -45,7 +41,6 @@ INT GetTbrUpIndex()
     }    
     return nRet;
 }
-
 
 
 
@@ -83,7 +78,6 @@ VOID CALLBACK UpdateCanvas( HWND aHWnd , UINT aMsg , UINT_PTR aEvent , DWORD aTi
 LRESULT CALLBACK CanvasProc( HWND aHWnd , UINT aMsg , WPARAM aWParam , LPARAM aLParam )
 {    
     static UINT_PTR pTimerId = NULL;
-
     switch( aMsg )
     {
         case WM_CREATE :    //Receive when the window is created
@@ -111,24 +105,6 @@ LRESULT CALLBACK CanvasProc( HWND aHWnd , UINT aMsg , WPARAM aWParam , LPARAM aL
         case WM_RBUTTONDBLCLK :
         case WM_MOUSEMOVE :
         {
-            //if ( aMsg == WM_KEYDOWN || aMsg == WM_KEYUP )
-            //{
-            //    WCHAR wzBuf[4096];
-            //    bitset<sizeof(ULONG)*8> repeat( (int)BitRange( (ULONG)aLParam , 0 , 15 ) );
-            //    bitset<sizeof(ULONG)*8> scan( (int)BitRange( (ULONG)aLParam , 16 , 23 ) );
-            //    bitset<sizeof(ULONG)*8> extend( (int)BitRange( (ULONG)aLParam , 24 , 24 ) );
-            //    bitset<sizeof(ULONG)*8> reserved( (int)BitRange( (ULONG)aLParam , 25 , 28 ) );
-            //    bitset<sizeof(ULONG)*8> context( (int)BitRange( (ULONG)aLParam , 29 , 29 ) );
-            //    bitset<sizeof(ULONG)*8> preState( (int)BitRange( (ULONG)aLParam , 30 , 30 ) );
-            //    bitset<sizeof(ULONG)*8> transition( (int)BitRange( (ULONG)aLParam , 31 , 31 ) );            
-            //    _snwprintf_s( wzBuf , _TRUNCATE , 
-            //                    L"%ws: Virtual Code: %lu, Repeat Count: %lu, Scan Code: %lu, Extend: %lu, Reserved: %lu\r\n"
-            //                    L"\tContext Code: %lu, Previous State: %lu, Transition State: %lu\r\n" , 
-            //                    ( aMsg == WM_KEYDOWN ) ? L"WM_KEYDOWN" : L"WM_KEYUP" ,
-            //                    aWParam , repeat.to_ulong() , scan.to_ulong() , extend.to_ulong() , reserved.to_ulong() ,
-            //                    context.to_ulong() , preState.to_ulong() , transition.to_ulong() );
-            //    ((CEdit *)g_ctrlMain[EDT_LOG])->AddText( wzBuf );
-            //}
             if ( CMultiWindowCtrl::GetInstance()->DispatchMsgIfNeed(aMsg,aWParam,aLParam) )
             {
                 return 0;   //Handled
@@ -199,11 +175,40 @@ LRESULT CALLBACK CanvasProc( HWND aHWnd , UINT aMsg , WPARAM aWParam , LPARAM aL
                             }
                             case MULTI_WINDOW_DISPLAY_MODE_GLREADPIXELS :
                             {
-                                HDC hdcMemCanvas = CreateCompatibleDC( hdcCanvas );
-                                HDC hdcMemTarget = CreateCompatibleDC( hdcTarget );
                                 GetClientRect( hWndTarget , &rect );
                                 INT nWidth = rect.right - rect.left;
                                 INT nHeight = rect.bottom - rect.top;
+                                HDC hdcMemCanvas = CreateCompatibleDC( hdcCanvas );
+                                HDC hdcMemTarget = CreateCompatibleDC( hdcTarget );
+
+                                PIXELFORMATDESCRIPTOR pfd;
+                                ZeroMemory( &pfd , sizeof(pfd) );
+                                pfd.nSize = sizeof( pfd );
+                                pfd.nVersion = 1;
+                                pfd.dwFlags = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER;
+                                pfd.iPixelType = PFD_TYPE_RGBA;
+                                pfd.cColorBits = 24;
+                                pfd.cDepthBits = 16;
+                                pfd.iLayerType = PFD_MAIN_PLANE;
+                                INT nFormat = ChoosePixelFormat( hdcCanvas , &pfd );
+                                SetPixelFormat( hdcCanvas , nFormat , &pfd );  
+                                HGLRC hGlrc = wglCreateContext( hdcCanvas );
+                                wglMakeCurrent( hdcCanvas , hGlrc );
+
+	                            glEnable( GL_TEXTURE_2D );
+	                            glDisable( GL_DEPTH_TEST| GL_LIGHTING | GL_CULL_FACE );
+                                GLuint nTexture;
+	                            glGenTextures( 1 , &nTexture );
+	                            glBindTexture( GL_TEXTURE_2D , nTexture );
+                                
+                               
+	                            //BLENDFUNCTION bfunc;
+		                        //bfunc.AlphaFormat = 0;
+		                        //bfunc.BlendFlags = 0;
+		                        //bfunc.BlendOp = AC_SRC_OVER;
+		                        //bfunc.SourceConstantAlpha = 255;
+                                //
+	                            //UpdateLayeredWindow( aHWnd , NULL , NULL , NULL , hdcCanvas , NULL , 0 , &bfunc , ULW_ALPHA );
 
                                 BITMAPINFO bitmapInfo = {};
                                 bitmapInfo.bmiHeader.biSize        = sizeof(BITMAPINFOHEADER);
@@ -213,27 +218,27 @@ LRESULT CALLBACK CanvasProc( HWND aHWnd , UINT aMsg , WPARAM aWParam , LPARAM aL
                                 bitmapInfo.bmiHeader.biWidth       = nWidth;
                                 bitmapInfo.bmiHeader.biHeight      = nHeight;
                                 bitmapInfo.bmiHeader.biSizeImage   = nWidth * nHeight * 4; // Size 4, assuming RGBA from OpenGL
-
+                                glReadBuffer( GL_FRONT );
+                                
                                 VOID * bmBits = NULL;
                                 HBITMAP memBM = CreateDIBSection( NULL , &bitmapInfo , DIB_RGB_COLORS , &bmBits , NULL, 0 );
                                 HGDIOBJ objLast = SelectObject( hdcMemCanvas , memBM );
-                                //HGDIOBJ obj        = SelectObject( hdcMemCanvas , memBM );
-                                glReadPixels( 0 , 0 , nWidth , nHeight , GL_BGRA_EXT , GL_UNSIGNED_BYTE , bmBits );
-                                
-                                //HGDIOBJ prevBitmap = SelectObject( hdcMemTarget , memBM );
+                                glReadPixels( 0 , 0 , nWidth , nHeight , GL_RGBA , GL_UNSIGNED_BYTE , bmBits );
+                                GLenum err = glGetError();
                                 BitBlt( hdcCanvas , 0 , 0 , nWidth , nHeight , hdcMemCanvas , 0 , 0 , SRCCOPY );
+                                
+                                //HGDIOBJ objLast = SelectObject( hdcMemTarget , memBM );
+                                //glReadPixels( 0 , 0 , nWidth , nHeight , GL_BGRA_EXT , GL_UNSIGNED_BYTE , bmBits );
+                                //GLenum err2 = glGetError();
+                                //BitBlt( hdcCanvas , 0 , 0 , nWidth , nHeight , hdcMemTarget , 0 , 0 , SRCCOPY );
+
+                                wglMakeCurrent( NULL , NULL );
+                                wglDeleteContext( hGlrc );
                                 SelectObject( hdcMemTarget , objLast );
                                 DeleteObject( memBM );
                                 DeleteDC( hdcMemTarget );   
                                 DeleteDC( hdcMemCanvas );
 
-                                //HBITMAP hBitmap = CreateCompatibleBitmap( hdcTarget , rect.right - rect.left , rect.bottom - rect.top );
-                                //glReadPixels( 0 , 0 , rect.right - rect.left , rect.bottom - rect.top , GL_RGB , GL_UNSIGNED_BYTE , )
-                                //HGDIOBJ objLast = SelectObject( hdcMemTarget , hBitmap );
-                                //BitBlt( hdcCanvas , 0 , 0 , rect.right - rect.left , rect.bottom - rect.top , hdcTarget , 0 , 0 , SRCCOPY | CAPTUREBLT );
-                                //SelectObject( hdcMemTarget , objLast );
-                                //DeleteObject( hBitmap );
-                                //DeleteDC( hdcMemTarget );
                                 break;
                             }
                             default :
@@ -255,31 +260,7 @@ LRESULT CALLBACK CanvasProc( HWND aHWnd , UINT aMsg , WPARAM aWParam , LPARAM aL
                         }
                     }
 
-                    //HDC hdcTarget = GetWindowDC( hWndTarget );
-                    //PrintWindow( hWndTarget , hdcCanvas , 0 );
-                    //RECT rect;
-                    //GetWindowRect( hWndTarget , &rect );
-                    //BitBlt( hdcCanvas , 0 , 0 , rect.right - rect.left , rect.bottom - rect.top , hdcTarget , 0 , 0 , SRCCOPY | CAPTUREBLT );
-
-                    //HDC hdcTarget = GetDC( NULL );
-                    //RECT rect;
-                    //GetClientRect( hWndTarget , &rect );
-                    //POINT ptTarget = { 0 , 0 };
-                    //ClientToScreen( hWndTarget , &ptTarget );
-                    //BitBlt( hdcCanvas , 0 , 0 , rect.right - rect.left , rect.bottom - rect.top , hdcTarget , ptTarget.x , ptTarget.y , SRCCOPY | CAPTUREBLT );
-
-                    //HDC hdcTarget = GetDC( hWndTarget );
-                    //HDC hdcMemTarget = CreateCompatibleDC( hdcTarget );
-                    //RECT rect;
-                    //GetClientRect( hWndTarget , &rect );
-                    //HBITMAP hBitmap = CreateCompatibleBitmap( hdcTarget , rect.right - rect.left , rect.bottom - rect.top );
-                    //HGDIOBJ objLast = SelectObject( hdcMemTarget , hBitmap );
-                    //BitBlt( hdcCanvas , 0 , 0 , rect.right - rect.left , rect.bottom - rect.top , hdcTarget , 0 , 0 , SRCCOPY | CAPTUREBLT );
-                    //SelectObject( hdcMemTarget , objLast );
-                    //DeleteObject( hBitmap );
-                    //DeleteDC( hdcMemTarget );
-
-                    ReleaseDC( hWndTarget , hdcTarget );
+                    ReleaseDC( NULL , hdcTarget );
                     EndPaint( aHWnd , &paint );
                 }
             }
@@ -303,6 +284,11 @@ LRESULT CALLBACK CanvasProc( HWND aHWnd , UINT aMsg , WPARAM aWParam , LPARAM aL
         }
         case WM_CLOSE :    //Receive when user try to close the window
         {
+            if ( g_pBmpData != NULL )
+            {
+                delete [] g_pBmpData;
+                g_pBmpData = NULL;
+            }
             DestroyWindow( aHWnd );
             break;
         }
@@ -428,7 +414,7 @@ LRESULT CALLBACK WndProc( HWND aHWnd , UINT aMsg , WPARAM aWParam , LPARAM aLPar
                 else
                 {
                     ((CEdit *)g_ctrlMain[EDT_MAIN_START + i])->Init( IDC_EDT_LOG + i , aHWnd , hInstance , wzEdt[i] ,
-                                                                     0 , 0 , 0 , 0 , WS_CHILD | WS_VISIBLE | WS_BORDER | WS_DISABLED |
+                                                                     0 , 0 , 0 , 0 , WS_CHILD | WS_VISIBLE | WS_BORDER | 
                                                                      ES_LEFT | ES_MULTILINE | ES_READONLY | 
                                                                      WS_HSCROLL | WS_VSCROLL | ES_AUTOHSCROLL | ES_AUTOVSCROLL );
                     ((CEdit *)g_ctrlMain[EDT_MAIN_START + i])->SetMaxLength( -1 );
@@ -474,6 +460,15 @@ LRESULT CALLBACK WndProc( HWND aHWnd , UINT aMsg , WPARAM aWParam , LPARAM aLPar
                         break;
                     }
                 }
+            }
+            break;
+        }
+        case WM_ACTIVATE :  //Active Canvas window so keyboard messages can be passed to there
+        {
+            if ( aWParam )
+            {
+                SetFocus( g_hWndCanvas );
+                return 0;
             }
             break;
         }
@@ -596,7 +591,7 @@ INT WINAPI wWinMain( HINSTANCE aHInstance , HINSTANCE aHPrevInstance , LPWSTR aC
 
     //Register CanvasClass
     wndCanvasClass.cbSize        = sizeof( WNDCLASSEX );
-    wndCanvasClass.style         = CS_DBLCLKS;
+    wndCanvasClass.style         = CS_DBLCLKS;  // | CS_HREDRAW | CS_VREDRAW;
     wndCanvasClass.lpfnWndProc   = CanvasProc;
     wndCanvasClass.cbClsExtra    = 0;
     wndCanvasClass.cbWndExtra    = 0;
@@ -614,23 +609,28 @@ INT WINAPI wWinMain( HINSTANCE aHInstance , HINSTANCE aHPrevInstance , LPWSTR aC
     }
 
     g_hWndMain = CreateWindowExW( WS_EX_CLIENTEDGE , wzMainClassName , L"MultiWindowHelper by winest" , WS_OVERLAPPEDWINDOW ,
-                                     CW_USEDEFAULT , CW_USEDEFAULT , 800+64+10+10  , 450+64+10+20+10+10 , NULL , NULL , aHInstance , NULL );
+                                  CW_USEDEFAULT , CW_USEDEFAULT , 800+64+10+10  , 450+64+10+20+10+10 , NULL , NULL , aHInstance , NULL );
     if ( NULL == g_hWndMain )
     {
         CWUtils::ShowDebugMsg( L"Error: failed to create g_hWndMain" );
         return 0;
     }
     //Create canvas area
-    g_hWndCanvas = CreateWindowEx( WS_EX_CLIENTEDGE | WS_EX_COMPOSITED , wzCanvasClassName , L"Canvas" ,
-                                   WS_CHILD | WS_VISIBLE , 0 , 0 , 0  , 0 , g_hWndMain , NULL , aHInstance , NULL );
+    g_hWndCanvas = CreateWindowExW( WS_EX_CLIENTEDGE | WS_EX_COMPOSITED , wzCanvasClassName , L"Canvas" ,
+                                    WS_CHILD | WS_VISIBLE , 0 , 0 , 0  , 0 , g_hWndMain , NULL , aHInstance , NULL );
     if ( g_hWndCanvas == NULL )
     {
         CWUtils::ShowDebugMsg( L"Error: failed to create g_hWndCanvas" );
         return -1;
     }
+    SetWindowLong( g_hWndCanvas , GWL_EXSTYLE , GetWindowLong(g_hWndCanvas , GWL_EXSTYLE) | WS_EX_LAYERED ); 
+	SetLayeredWindowAttributes( g_hWndCanvas , 0 , 255 , LWA_ALPHA );
 
     UpdateWindow( g_hWndMain );
     ShowWindow( g_hWndMain, aCmdShow );
+
+    
+    
 
     MSG msg;
     while ( 0 < GetMessageW( &msg , NULL , 0 , 0 ) )
